@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Addressable Group 2
+  m_EditorClassIdentifier: 
+  m_GroupName: Addressable Group 2
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 1637f851af4da2c4386bc38ede4b0bb6
+  m_SerializeEntries:
+  - m_GUID: 7ef9765f51ea99443ad092c51ed1155f
+    m_Address: Assets/Prefabs/Quad.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1622d2d4c987b644a20e3c005392ac0
+    m_Address: Assets/Prefabs/Plane.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: f7d8a34a8b26e4746a07ad0667b230ac, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 852d6b13f8d32cc4c909b0bf17b039c8, type: 2}
+    - {fileID: 11400000, guid: 5920a5672a0210847918fc9b23e86ba0, type: 2}
