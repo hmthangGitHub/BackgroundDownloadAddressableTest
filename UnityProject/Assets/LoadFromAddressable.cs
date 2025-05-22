@@ -33,6 +33,7 @@ public class LoadFromAddressable : MonoBehaviour
 
     void Update()
     {
+        return;
         var downloads = BackgroundDownload.backgroundDownloads;
          if (downloads.Length > 0 && downloads[0].status == BackgroundDownloadStatus.Downloading)
          {
@@ -57,28 +58,18 @@ public class LoadFromAddressable : MonoBehaviour
 
     public async void Download()
     {
-        Caching.ClearCache();
         await Addressables.InitializeAsync();
         var sizeHandle = await Addressables.GetDownloadSizeAsync("Assets/Prefabs/Capsule.prefab");
         Debug.Log(sizeHandle);
         var allKeys = Addressables.ResourceLocators.SelectMany(x => x.Keys).Distinct().ToList();
         var locationsHandle = await Addressables.LoadResourceLocationsAsync(allKeys, Addressables.MergeMode.Union);
         string path = Path.Combine(Application.persistentDataPath, "com.unity.addressables");
-
-        await Addressables.DownloadDependenciesAsync("Assets/Prefabs/Capsule.prefab");
+        
+        // only down load location begin with path
+        // download background here
+        // await Addressables.DownloadDependenciesAsync("Assets/Prefabs/Capsule.prefab");
         await Addressables.InstantiateAsync("Assets/Prefabs/Capsule.prefab");
         Debug.Log(Application.persistentDataPath);
-        
-
-        if (Directory.Exists(path))
-        {
-            string[] files = Directory.GetFiles(path);
-
-            foreach (string file in files)
-            {
-                Debug.Log("File: " + Path.GetFileName(file));
-            }
-        }
     }
 
     IEnumerator DownloadMultipleFiles()
@@ -209,4 +200,33 @@ public class LoadFromAddressable : MonoBehaviour
 
         Debug.Log("All files deleted.");
     }
+    #if UNITY_EDITOR
+    [UnityEditor.MenuItem("Tools/Open Persistent Data Path")]
+    private static void OpenPersistentDataPath()
+    {
+        string path = Application.persistentDataPath;
+        if (Directory.Exists(path))
+        {
+            System.Diagnostics.Process.Start(path);
+        }
+        else
+        {
+            Debug.LogError($"Directory not found: {path}");
+        }
+    }
+
+    [UnityEditor.MenuItem("Tools/Open StreamingAssets Path")]
+    private static void OpenStreamingAssetsPath()
+    {
+        string path = Application.streamingAssetsPath;
+        if (Directory.Exists(path))
+        {
+            System.Diagnostics.Process.Start(path);
+        }
+        else
+        {
+            Debug.LogError($"Directory not found: {path}");
+        }
+    }
+    #endif
 }

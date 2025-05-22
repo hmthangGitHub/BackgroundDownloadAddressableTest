@@ -39,7 +39,7 @@ MonoBehaviour:
     m_Id: 21b9e057766867f4f80ac1a7eeb04dcc
   m_BundleMode: 0
   m_AssetBundleProviderType:
-    m_AssemblyName: Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    m_ClassName: AddressableBackgroundDownload.BackgroundDownloadResourceProvider
+    m_AssemblyName: Unity.ResourceManager, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    m_ClassName: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleProvider
   m_BundleNaming: 0
   m_AssetLoadMode: 0
