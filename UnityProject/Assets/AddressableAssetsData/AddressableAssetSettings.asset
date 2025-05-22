@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 65f491d811ea61f499657913cae70b91
   m_currentHash:
     serializedVersion: 2
-    Hash: ae1a3023895c05478d0a7e5068e964ae
+    Hash: 00000000000000000000000000000000
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 1
   m_BundleLocalCatalog: 0
@@ -66,7 +66,7 @@ MonoBehaviour:
       - m_Id: 2a69df862c40063458b0cc99b68b21d6
         m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
       - m_Id: 7cda2e944fc6b0843aaa41c5a0a86652
-        m_Value: D:\Programing\BackgroundDownloadAddressableTest\docs
+        m_Value: '[UnityEngine.Application.dataPath]/../../docs'
       - m_Id: 93b29e07386833344971438e6212f76b
         m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
     m_ProfileEntryNames:

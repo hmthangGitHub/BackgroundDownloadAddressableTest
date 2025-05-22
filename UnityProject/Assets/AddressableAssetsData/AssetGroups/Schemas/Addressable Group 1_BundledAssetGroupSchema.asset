@@ -22,8 +22,8 @@ MonoBehaviour:
   m_CacheClearBehavior: 0
   m_IncludeInBuild: 1
   m_BundledAssetProviderType:
-    m_AssemblyName: Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    m_ClassName: BackgroundDownloadAssetBundleProvider
+    m_AssemblyName: Unity.ResourceManager, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    m_ClassName: UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider
   m_ForceUniqueProvider: 0
   m_UseAssetBundleCache: 1
   m_UseAssetBundleCrc: 1
@@ -40,6 +40,6 @@ MonoBehaviour:
   m_BundleMode: 0
   m_AssetBundleProviderType:
     m_AssemblyName: Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    m_ClassName: BackgroundDownloadAssetBundleProvider
+    m_ClassName: AddressableBackgroundDownload.BackgroundDownloadResourceProvider
   m_BundleNaming: 0
   m_AssetLoadMode: 0

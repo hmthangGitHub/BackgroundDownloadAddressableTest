@@ -12,6 +12,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using Unity.Networking;
 using Unity.VisualScripting;
 using UnityEngine.Networking;
+using Cache = UnityEngine.Cache;
 
 public class LoadFromAddressable : MonoBehaviour
 {
@@ -56,8 +57,7 @@ public class LoadFromAddressable : MonoBehaviour
 
     public async void Download()
     {
-        Debug.Log($"Downloading {Application.streamingAssetsPath}");
-        // StartCoroutine(DownloadMultipleFiles());
+        Caching.ClearCache();
         await Addressables.InitializeAsync();
         var sizeHandle = await Addressables.GetDownloadSizeAsync("Assets/Prefabs/Capsule.prefab");
         Debug.Log(sizeHandle);
@@ -65,21 +65,6 @@ public class LoadFromAddressable : MonoBehaviour
         var locationsHandle = await Addressables.LoadResourceLocationsAsync(allKeys, Addressables.MergeMode.Union);
         string path = Path.Combine(Application.persistentDataPath, "com.unity.addressables");
 
-        foreach (var location in locationsHandle)
-        {
-            string url = location.InternalId;
-            if (url.Contains(".bundle"))
-            {
-                string filename = new Uri(url).Segments[^1];
-                Hash128 hash = (Hash128)location.Data;
-                // Caching.AddCache(filename, hash);
-                
-            }
-
-            
-        }
-        
-        // await Addressables.DownloadDependenciesAsync(locationsHandle);
         await Addressables.DownloadDependenciesAsync("Assets/Prefabs/Capsule.prefab");
         await Addressables.InstantiateAsync("Assets/Prefabs/Capsule.prefab");
         Debug.Log(Application.persistentDataPath);
