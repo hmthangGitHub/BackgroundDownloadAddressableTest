@@ -18,44 +18,10 @@ public class LoadFromAddressable : MonoBehaviour
 {
     public TextMeshProUGUI progressText;
 
-    private const string ZipFileName = "a.zip";
-    private const string DummyFileName = "test.mp4";
-    private const string CatalogFileName = "catalog_0.1.json";
-
-    private string ZipPath => Path.Combine(Application.persistentDataPath, ZipFileName);
-    private string DummyPath => Path.Combine(Application.persistentDataPath, DummyFileName);
-    private string ExtractedPath => Path.Combine(Application.persistentDataPath, "Extracted");
-    private string CatalogPath => Path.Combine(ExtractedPath, CatalogFileName);
-
     private bool shouldInstantiatePrefabs;
-    private List<GameObject> loadedPrefabs = new();
     private bool isDownloading;
-
-    void Update()
-    {
-        return;
-        var downloads = BackgroundDownload.backgroundDownloads;
-         if (downloads.Length > 0 && downloads[0].status == BackgroundDownloadStatus.Downloading)
-         {
-             var download = downloads[0];
-             long progress = download.progress;
-             progressText.text = progress >= 0
-                 ? $"Downloading: {progress / 1000000.0f:0.0}%"
-                 : "Downloading...";
-         }
-
-        if (shouldInstantiatePrefabs && loadedPrefabs.Count > 0)
-        {
-            foreach (var prefab in loadedPrefabs)
-            {
-                Instantiate(prefab);
-            }
-            progressText.text = $"Instantiated {loadedPrefabs.Count} prefabs!";
-            shouldInstantiatePrefabs = false;
-            isDownloading = false;
-        }
-    }
-
+    List<string> fileNames = new();
+    
     public async void Download()
     {
         Caching.ClearCache();
@@ -65,132 +31,86 @@ public class LoadFromAddressable : MonoBehaviour
         Debug.Log(sizeHandle);
         var allKeys = Addressables.ResourceLocators.SelectMany(x => x.Keys).Distinct().ToList();
         var locationsHandle = await Addressables.LoadResourceLocationsAsync(allKeys, Addressables.MergeMode.Union);
-        // foreach (var location in locationsHandle)
-        // {
-        //     Debug.Log(location.InternalId);
-        // }
-        var list = new List<string>();
-        Caching.GetAllCachePaths(list);
-        foreach (var item in list)
+        foreach (var location in locationsHandle)
         {
-            Debug.Log(item);
-        }
-        // await Addressables.DownloadDependenciesAsync("Assets/Prefabs/Capsule.prefab");
-        await Addressables.InstantiateAsync("Assets/Prefabs/Capsule.prefab");
-    }
+            string normalizedInternalId = location.InternalId.Replace("\\", "/");
 
-    IEnumerator DownloadMultipleFiles()
-    {
-        Uri zipUrl = new Uri("https://drive.google.com/uc?export=download&id=1mV8DPjQmjHGMEAhLLtgF2830fP-p7RqB");
-        var zipDownload = BackgroundDownload.Start(zipUrl, ZipFileName);
+            if (normalizedInternalId.Contains(Application.persistentDataPath))
+            {
+                var fileName = Path.GetFileName(location.InternalId);
+                fileNames.Add(fileName);
+            }
+        }
         
-        // Uri dummyUrl = new Uri("https://drive.google.com/uc?export=download&id=1DHneI6DrS6CBxehr5C4x0J0X9BiUGVzo");
-        // var dummyDownload = BackgroundDownload.Start(dummyUrl, DummyFileName);
-
-        // yield return dummyDownload;
-        yield return zipDownload;
-
-        // if (dummyDownload.status != BackgroundDownloadStatus.Done)
-        //     Debug.LogError($"Dummy file download failed: {dummyDownload.error}");
-
-        if (zipDownload.status == BackgroundDownloadStatus.Done)
-        {
-            Debug.Log("ZIP file downloaded. Extracting...");
-            StartCoroutine(ExtractAndLoadCatalog());
-        }
-        else
-        {
-            Debug.LogError("ZIP file download failed: " + zipDownload.error);
-            progressText.text = "Download failed!";
-        }
+        StartCoroutine(DownloadBundle());
     }
 
-    IEnumerator ExtractAndLoadCatalog()
+    IEnumerator DownloadBundle()
     {
-        //Extract file Zip
-        if (Directory.Exists(ExtractedPath))
-            Directory.Delete(ExtractedPath, true);
-
-        try
+        string destinationDirectory = Path.Combine(Application.persistentDataPath, "com.unity.addressable");
+        if (!Directory.Exists(destinationDirectory))
         {
-            ZipFile.ExtractToDirectory(ZipPath, ExtractedPath);
-            Debug.Log("Extracted to: " + ExtractedPath);
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError("Failed to extract zip: " + ex.Message);
-            progressText.text = "Extract failed!";
-            yield break;
+            Directory.CreateDirectory(destinationDirectory);
         }
 
-        //Load catalog
-        string catalogFullPath = "file://" + CatalogPath;
+        int totalFiles = fileNames.Count;
+        int completedFiles = 0;
+        float totalProgress = 0f;
 
-        var handle = Addressables.LoadContentCatalogAsync(catalogFullPath);
-        yield return handle;
+        List<BackgroundDownload> downloads = new List<BackgroundDownload>();
 
-        if (handle.Status == AsyncOperationStatus.Succeeded)
+        foreach (var name in fileNames)
         {
-            Debug.Log("Catalog loaded.");
-
-            List<object> prefabKeys = new();
-            foreach (var key in handle.Result.Keys)
+            Uri bundleUri = new Uri($"https://github.com/hmthangGitHub/BackgroundDownloadAddressableTest/raw/refs/heads/master/docs/{name}");
+            var download = BackgroundDownload.Start(bundleUri, name);
+            downloads.Add(download);
+        }
+        
+        while (downloads.Any(d => d.status == BackgroundDownloadStatus.Downloading))
+        {
+            totalProgress = 0f;
+            completedFiles = downloads.Count(d => d.status == BackgroundDownloadStatus.Done);
+            foreach (var download in downloads)
             {
-                if (handle.Result.Locate(key, typeof(GameObject), out _))
+                if (download.status == BackgroundDownloadStatus.Downloading)
                 {
-                    prefabKeys.Add(key);
+                    totalProgress += download.progress / 1000000.0f;
+                }
+                else if (download.status == BackgroundDownloadStatus.Done)
+                {
+                    totalProgress += 100.0f;
                 }
             }
 
-            if (prefabKeys.Count == 0)
+            float averageProgress = totalProgress / totalFiles;
+            progressText.text = $"Downloading {completedFiles}/{totalFiles} files: {averageProgress:0.0}%";
+            yield return null;
+        }
+        
+        for (int i = 0; i < downloads.Count; i++)
+        {
+            var download = downloads[i];
+            var name = fileNames[i];
+            string filePath = Path.Combine(Application.persistentDataPath, name);
+            string destinationPath = Path.Combine(destinationDirectory, name);
+        
+            if (download.status == BackgroundDownloadStatus.Done)
             {
-                progressText.text = "No prefabs found!";
-                yield break;
-            }
-            
-            foreach (var locator in Addressables.ResourceLocators) 
-            { 
-                foreach (var key in locator.Keys) 
-                { 
-                    if (locator.Locate(key, typeof(GameObject), out var locations)) 
-                    { 
-                        foreach (var location in locations) 
-                        { 
-                            string url = location.InternalId; 
-                            Debug.Log($"Key: {key} → URL: {url}"); 
-                        } 
-                    } 
-                } 
-            }
-
-            loadedPrefabs.Clear();
-            foreach (var key in prefabKeys)
-            {
-                var prefabHandle = Addressables.LoadAssetAsync<GameObject>(key);
-                yield return prefabHandle;
-
-                if (prefabHandle.Status == AsyncOperationStatus.Succeeded)
+                if (File.Exists(filePath))
                 {
-                    loadedPrefabs.Add(prefabHandle.Result);
+                    File.Move(filePath, destinationPath);
                 }
-            }
-
-            if (loadedPrefabs.Count > 0)
-            {
-                shouldInstantiatePrefabs = true;
-                Debug.Log($"Loaded {loadedPrefabs.Count} prefabs, ready to instantiate.");
             }
             else
             {
-                Debug.LogError("Failed to load any prefabs.");
-                progressText.text = "Prefab load failed!";
+                Debug.LogError($"Failed to download {name}: {download.error}");
+                progressText.text = $"Failed to download {name}!";
+                yield break;
             }
         }
-        else
-        {
-            Debug.LogError("Failed to load catalog.");
-            progressText.text = "Catalog load failed!";
-        }
+
+        progressText.text = "All files downloaded!";
+        Addressables.InstantiateAsync("Assets/Prefabs/character.fbx");
     }
 
     public void DeleteFile()
