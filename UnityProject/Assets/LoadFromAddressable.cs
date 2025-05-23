@@ -58,6 +58,8 @@ public class LoadFromAddressable : MonoBehaviour
 
     public async void Download()
     {
+        Caching.ClearCache();
+        UnityWebRequest.ClearCookieCache();
         await Addressables.InitializeAsync();
         var sizeHandle = await Addressables.GetDownloadSizeAsync("Assets/Prefabs/Capsule.prefab");
         Debug.Log(sizeHandle);
@@ -73,7 +75,7 @@ public class LoadFromAddressable : MonoBehaviour
         {
             Debug.Log(item);
         }
-        await Addressables.DownloadDependenciesAsync("Assets/Prefabs/Capsule.prefab");
+        // await Addressables.DownloadDependenciesAsync("Assets/Prefabs/Capsule.prefab");
         await Addressables.InstantiateAsync("Assets/Prefabs/Capsule.prefab");
     }
 
