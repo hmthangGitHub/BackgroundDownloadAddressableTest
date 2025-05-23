@@ -63,13 +63,10 @@ public class LoadFromAddressable : MonoBehaviour
         Debug.Log(sizeHandle);
         var allKeys = Addressables.ResourceLocators.SelectMany(x => x.Keys).Distinct().ToList();
         var locationsHandle = await Addressables.LoadResourceLocationsAsync(allKeys, Addressables.MergeMode.Union);
-        string path = Path.Combine(Application.persistentDataPath, "com.unity.addressables");
-        
-        // only down load location begin with path
-        // download background here
-        // await Addressables.DownloadDependenciesAsync("Assets/Prefabs/Capsule.prefab");
-        await Addressables.InstantiateAsync("Assets/Prefabs/Capsule.prefab");
-        Debug.Log(Application.persistentDataPath);
+        foreach (var location in locationsHandle)
+        {
+            Debug.Log(location.InternalId);
+        }
     }
 
     IEnumerator DownloadMultipleFiles()
