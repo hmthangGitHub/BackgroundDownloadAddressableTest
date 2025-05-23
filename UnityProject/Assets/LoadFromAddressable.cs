@@ -63,10 +63,18 @@ public class LoadFromAddressable : MonoBehaviour
         Debug.Log(sizeHandle);
         var allKeys = Addressables.ResourceLocators.SelectMany(x => x.Keys).Distinct().ToList();
         var locationsHandle = await Addressables.LoadResourceLocationsAsync(allKeys, Addressables.MergeMode.Union);
-        foreach (var location in locationsHandle)
+        // foreach (var location in locationsHandle)
+        // {
+        //     Debug.Log(location.InternalId);
+        // }
+        var list = new List<string>();
+        Caching.GetAllCachePaths(list);
+        foreach (var item in list)
         {
-            Debug.Log(location.InternalId);
+            Debug.Log(item);
         }
+        await Addressables.DownloadDependenciesAsync("Assets/Prefabs/Capsule.prefab");
+        await Addressables.InstantiateAsync("Assets/Prefabs/Capsule.prefab");
     }
 
     IEnumerator DownloadMultipleFiles()
