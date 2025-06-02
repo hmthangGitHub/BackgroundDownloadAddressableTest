@@ -17,6 +17,11 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 1637f851af4da2c4386bc38ede4b0bb6
   m_SerializeEntries:
+  - m_GUID: 2bf34c9c1ffcc2543ad4eda7e7f052e8
+    m_Address: Assets/ModularDungeonCollection/Textures
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7ef9765f51ea99443ad092c51ed1155f
     m_Address: Assets/Prefabs/Quad.prefab
     m_ReadOnly: 0

@@ -17,6 +17,11 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 474017a518bd2d0449dad1f75896518e
   m_SerializeEntries:
+  - m_GUID: 459c0770b29083748b08da7b9c351cc8
+    m_Address: Assets/Prefabs/character.fbx
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ab1d6787b538fc94aaaff8853dc0e11d
     m_Address: Assets/Prefabs/Cylinder.prefab
     m_ReadOnly: 0
