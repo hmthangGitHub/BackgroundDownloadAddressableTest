@@ -17,6 +17,7 @@ using Cache = UnityEngine.Cache;
 public class LoadFromAddressable : MonoBehaviour
 {
     public TextMeshProUGUI progressText;
+    public string prefabUrl = "Assets/Prefabs/character.fbx";
 
     private bool shouldInstantiatePrefabs;
     private bool isDownloading;
@@ -110,7 +111,7 @@ public class LoadFromAddressable : MonoBehaviour
         }
 
         progressText.text = "All files downloaded!";
-        Addressables.InstantiateAsync("Assets/Prefabs/character.fbx");
+        Addressables.InstantiateAsync(prefabUrl);
     }
 
     public void DeleteFile()
