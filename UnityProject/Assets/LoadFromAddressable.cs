@@ -59,10 +59,17 @@ public class LoadFromAddressable : MonoBehaviour
         float totalProgress = 0f;
 
         List<BackgroundDownload> downloads = new List<BackgroundDownload>();
+        string buildTarget = "StandaloneWindows64";
+        
+        #if UNITY_ANDROID
+        buildTarget = "Android";
+        #elif UNITY_IOS
+        buildTarget = "iOS";
+        #endif
 
         foreach (var name in fileNames)
         {
-            Uri bundleUri = new Uri($"https://github.com/hmthangGitHub/BackgroundDownloadAddressableTest/raw/refs/heads/master/docs/{name}");
+            Uri bundleUri = new Uri($"https://github.com/hmthangGitHub/BackgroundDownloadAddressableTest/raw/refs/heads/master/docs/{buildTarget}/{name}");
             var download = BackgroundDownload.Start(bundleUri, name);
             downloads.Add(download);
         }
