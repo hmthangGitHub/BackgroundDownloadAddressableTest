@@ -18,6 +18,7 @@ public class LoadFromAddressable : MonoBehaviour
 {
     public TextMeshProUGUI progressText;
     public string prefabUrl = "Assets/Prefabs/character.fbx";
+    public string downloadUrl = "https://hmthanggithub.github.io/BackgroundDownloadAddressableTest/";
 
     private bool shouldInstantiatePrefabs;
     private bool isDownloading;
@@ -69,7 +70,7 @@ public class LoadFromAddressable : MonoBehaviour
 
         foreach (var name in fileNames)
         {
-            Uri bundleUri = new Uri($"https://github.com/hmthangGitHub/BackgroundDownloadAddressableTest/raw/refs/heads/master/docs/{buildTarget}/{name}");
+            Uri bundleUri = new Uri($"{downloadUrl}/{buildTarget}/{name}");
             var download = BackgroundDownload.Start(bundleUri, name);
             downloads.Add(download);
         }

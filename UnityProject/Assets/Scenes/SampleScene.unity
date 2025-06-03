@@ -728,6 +728,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   progressText: {fileID: 1141140598}
+  prefabUrl: Assets/Prefabs/character.fbx
+  downloadUrl: https://hmthanggithub.github.io/BackgroundDownloadAddressableTest/
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
